@@ -1,0 +1,45 @@
+<div 
+  class="kanban-column"
+  [class.drag-over]="dragOverIndex !== null"
+  (dragover)="onColumnDragOver($event)"
+  (drop)="onColumnDrop($event)"
+>
+  <header class="column-header">
+    <div class="column-title">
+      <span class="column-icon">{{ columnIcon }}</span>
+      <h3>{{ column.title }}</h3>
+    </div>
+    <div class="column-count">{{ column.todos.length }}</div>
+  </header>
+
+  <div class="column-content">
+    <div *ngIf="column.todos.length === 0" class="empty-column">
+      <div class="empty-icon">{{ columnIcon }}</div>
+      <p>No tasks in {{ column.title.toLowerCase() }}</p>
+      <span class="empty-hint">Drag tasks here or create new ones</span>
+    </div>
+
+    <div 
+      *ngFor="let todo of column.todos; let i = index; trackBy: trackByTodo"
+      class="todo-drop-zone"
+      [ngStyle]="getDragPlaceholderStyle(i)"
+      (dragover)="onDragOver($event, i)"
+      (drop)="onDrop($event, i)"
+    >
+      <app-todo-item 
+        [todo]="todo"
+        [toggleButtonText]="toggleButtonText"
+        [class.being-dragged]="draggedItemId === todo.id"
+        (toggle)="onToggleTodo($event)"
+        (delete)="onDeleteTodo($event)"
+        (edit)="onEditTodo($event)"
+        (dragStart)="onDragStart($event)"
+        (dragEnd)="onDragEnd()"
+        class="kanban-todo-item"
+        draggable="true"
+        (dragstart)="onDragStart(todo.id)"
+        (dragend)="onDragEnd()"
+      ></app-todo-item>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,70 @@
+<div class="user-profile" *ngIf="user" (document:click)="onDocumentClick($event)">
+  <button 
+    class="profile-trigger"
+    (click)="toggleDropdown()"
+    [attr.aria-expanded]="showDropdown"
+    aria-haspopup="true"
+  >
+    <div class="user-avatar">
+      <span class="avatar-content">{{ getUserInitials() }}</span>
+      <div *ngIf="user.isGuest" class="guest-indicator" title="Guest User">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M7.07,18.28C7.5,17.38 10.12,16.5 12,16.5C13.88,16.5 16.5,17.38 16.93,18.28C15.57,19.36 13.86,20 12,20C10.14,20 8.43,19.36 7.07,18.28M18.36,16.83C16.93,15.09 13.46,14.5 12,14.5C10.54,14.5 7.07,15.09 5.64,16.83C4.62,15.5 4,13.82 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,13.82 19.38,15.5 18.36,16.83M12,6C10.06,6 8.5,7.56 8.5,9.5C8.5,11.44 10.06,13 12,13C13.94,13 15.5,11.44 15.5,9.5C15.5,7.56 13.94,6 12,6M12,11A1.5,1.5 0 0,1 10.5,9.5A1.5,1.5 0 0,1 12,8A1.5,1.5 0 0,1 13.5,9.5A1.5,1.5 0 0,1 12,11Z"/>
+        </svg>
+      </div>
+    </div>
+    
+    <div class="user-info">
+      <span class="user-name">{{ userDisplayName }}</span>
+      <span class="user-role">{{ userRole }}</span>
+    </div>
+    
+    <svg 
+      class="dropdown-arrow" 
+      [class.open]="showDropdown"
+      width="16" 
+      height="16" 
+      viewBox="0 0 24 24" 
+      fill="currentColor"
+    >
+      <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"/>
+    </svg>
+  </button>
+
+  <div class="profile-dropdown" [class.show]="showDropdown">
+    <div class="dropdown-header">
+      <div class="user-avatar-large">
+        <span class="avatar-content">{{ getUserInitials() }}</span>
+      </div>
+      <div class="user-details">
+        <h4>{{ userDisplayName }}</h4>
+        <p *ngIf="!user.isGuest">{{ user.email }}</p>
+        <p *ngIf="user.isGuest">Temporary Session</p>
+        <span class="user-badge" [class.guest]="user.isGuest">
+          {{ userRole }}
+        </span>
+      </div>
+    </div>
+    
+    <div class="dropdown-divider"></div>
+    
+    <div class="dropdown-menu">
+      <button class="menu-item" (click)="toggleTheme()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+          <path *ngIf="currentTheme === 'light'" d="M12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18M12,2L14.39,5.42C13.65,5.15 12.84,5 12,5C11.16,5 10.35,5.15 9.61,5.42L12,2M3.34,7L7.5,6.65C6.9,7.16 6.36,7.78 5.94,8.5C5.5,9.24 5.25,10 5.11,10.79L3.34,7M3.36,17L5.13,13.21C5.27,14 5.53,14.78 5.97,15.5C6.39,16.22 6.93,16.84 7.53,17.35L3.36,17M20.65,7L18.88,10.79C18.74,10 18.47,9.23 18.03,8.5C17.61,7.78 17.07,7.15 16.47,6.64L20.65,7M20.64,17L16.47,17.36C17.07,16.85 17.61,16.22 18.03,15.5C18.47,14.77 18.74,14 18.88,13.21L20.64,17M12,22L9.61,18.58C10.35,18.85 11.16,19 12,19C12.84,19 13.65,18.85 14.39,18.58L12,22Z"/>
+          <path *ngIf="currentTheme === 'dark'" d="M17.75,4.09L15.22,6.03L16.13,9.09L13.5,7.28L10.87,9.09L11.78,6.03L9.25,4.09L12.44,4L13.5,1L14.56,4L17.75,4.09M21.25,11L19.61,12.25L20.2,14.23L18.5,13.06L16.8,14.23L17.39,12.25L15.75,11L17.81,10.95L18.5,9L19.19,10.95L21.25,11M18.97,15.95C19.8,15.87 20.69,17.05 20.16,17.8C19.84,18.25 19.5,18.67 19.08,19.07C15.17,23 8.84,23 4.94,19.07C1.03,15.17 1.03,8.83 4.94,4.93C5.34,4.53 5.76,4.17 6.21,3.85C6.96,3.32 8.14,4.21 8.06,5.04C7.79,7.9 8.75,10.87 10.95,13.06C13.14,15.26 16.1,16.22 18.97,15.95M17.33,17.97C14.5,17.81 11.7,16.64 9.53,14.5C7.36,12.31 6.2,9.5 6.04,6.68C3.23,9.82 3.34,14.4 6.35,17.41C9.37,20.43 14,20.54 17.33,17.97Z"/>
+        </svg>
+        <span>{{ currentTheme === 'light' ? 'Dark Mode' : 'Light Mode' }}</span>
+      </button>
+      
+      <div class="dropdown-divider"></div>
+      
+      <button class="menu-item logout-item" (click)="onLogout()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M16,17V14H9V10H16V7L21,12L16,17M14,2A2,2 0 0,1 16,4V6H14V4H5V20H14V18H16V20A2,2 0 0,1 14,22H5A2,2 0 0,1 3,20V4A2,2 0 0,1 5,2H14Z"/>
+        </svg>
+        <span>{{ user.isGuest ? 'Exit Guest Mode' : 'Sign Out' }}</span>
+      </button>
+    </div>
+  </div>
+</div>

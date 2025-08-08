@@ -1,0 +1,273 @@
+.todo-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  cursor: default;
+}
+
+.todo-item.completed {
+  opacity: 0.7;
+}
+
+
+
+.drag-handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 40px;
+  cursor: grab;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  user-select: none;
+}
+
+.todo-item:hover .drag-handle {
+  opacity: 1;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
+.drag-dots {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3px;
+  padding: 4px;
+}
+
+.dot {
+  width: 3px;
+  height: 3px;
+  background: var(--border-hover);
+  border-radius: 50%;
+  transition: background 0.2s ease;
+}
+
+.drag-handle:hover .dot {
+  background: var(--text-secondary);
+}
+
+.todo-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.toggle-btn {
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--border-hover);
+  border-radius: 50%;
+  background: var(--bg-card);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.toggle-btn:hover {
+  border-color: var(--primary-color);
+  transform: scale(1.1);
+}
+
+.toggle-btn.checked {
+  background: var(--success-color);
+  border-color: var(--success-color);
+  animation: checkBounce 0.3s ease;
+}
+
+.toggle-btn.in-progress {
+  background: var(--warning-color);
+  border-color: var(--warning-color);
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+.checkmark {
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+  animation: checkmarkAppear 0.2s ease;
+}
+
+.progress-indicator {
+  color: white;
+  font-size: 12px;
+  animation: lightning 1s ease-in-out infinite;
+}
+
+.todo-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.todo-display {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.todo-title {
+  font-size: 1rem;
+  color: var(--text-primary);
+  transition: all 0.2s ease;
+  word-break: break-word;
+}
+
+.todo-title.completed {
+  text-decoration: line-through;
+  color: var(--text-secondary);
+}
+
+.todo-date {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.todo-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.edit-input {
+  padding: 0.5rem;
+  border: 2px solid var(--primary-color);
+  border-radius: 4px;
+  font-size: 1rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s ease;
+  background: var(--bg-card);
+  color: var(--text-primary);
+}
+
+.edit-input:focus {
+  border-color: var(--primary-hover);
+}
+
+.edit-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.save-btn, .cancel-btn {
+  padding: 0.25rem 0.5rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.save-btn {
+  background: var(--success-color);
+  color: white;
+}
+
+.save-btn:hover {
+  background: var(--success-hover);
+}
+
+.cancel-btn {
+  background: var(--danger-color);
+  color: white;
+}
+
+.cancel-btn:hover {
+  background: var(--danger-hover);
+}
+
+.todo-actions {
+  display: flex;
+  gap: 0.5rem;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.todo-item:hover .todo-actions {
+  opacity: 1;
+}
+
+.edit-btn, .delete-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.edit-btn {
+  color: var(--primary-color);
+}
+
+.edit-btn:hover {
+  background: var(--primary-color);
+  color: white;
+  transform: scale(1.1);
+}
+
+.delete-btn {
+  color: var(--danger-color);
+}
+
+.delete-btn:hover {
+  background: var(--danger-color);
+  color: white;
+  transform: scale(1.1);
+}
+
+@keyframes checkBounce {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+@keyframes checkmarkAppear {
+  0% { 
+    opacity: 0;
+    transform: scale(0);
+  }
+  100% { 
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { 
+    box-shadow: 0 0 0 0 var(--warning-color);
+  }
+  50% { 
+    box-shadow: 0 0 0 4px rgba(243, 156, 18, 0.3);
+  }
+}
+
+@keyframes lightning {
+  0%, 100% { 
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% { 
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
+}

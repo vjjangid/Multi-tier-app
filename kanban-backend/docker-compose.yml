@@ -1,0 +1,95 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15
+    container_name: kanban-postgres
+    environment:
+      POSTGRES_DB: kanban
+      POSTGRES_USER: kanban_user
+      POSTGRES_PASSWORD: kanban_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-databases.sql:/docker-entrypoint-initdb.d/init-databases.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kanban_user -d kanban"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Auth Service
+  auth-service:
+    build:
+      context: .
+      dockerfile: src/services/AuthService/Dockerfile
+    container_name: kanban-auth-service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Host=postgres;Database=kanban_auth;Username=kanban_user;Password=kanban_password
+      - Jwt__Secret=your-super-secret-key-here-make-it-at-least-32-characters-long-for-production
+    ports:
+      - "5001:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Kanban Service
+  kanban-service:
+    build:
+      context: .
+      dockerfile: src/services/KanbanService/Dockerfile
+    container_name: kanban-kanban-service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Host=postgres;Database=kanban_tasks;Username=kanban_user;Password=kanban_password
+      - Jwt__Secret=your-super-secret-key-here-make-it-at-least-32-characters-long-for-production
+    ports:
+      - "5002:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # API Gateway
+  api-gateway:
+    build:
+      context: .
+      dockerfile: src/gateway/ApiGateway/Dockerfile
+    container_name: kanban-api-gateway
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - Jwt__Secret=your-super-secret-key-here-make-it-at-least-32-characters-long-for-production
+      - ReverseProxy__Clusters__auth-cluster__Destinations__destination1__Address=http://auth-service:80/
+      - ReverseProxy__Clusters__kanban-cluster__Destinations__destination1__Address=http://kanban-service:80/
+    ports:
+      - "5000:80"
+    depends_on:
+      - auth-service
+      - kanban-service
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  postgres_data:
+
+networks:
+  default:
+    driver: bridge

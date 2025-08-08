@@ -1,0 +1,58 @@
+<div class="todo-app">
+  <header class="app-header">
+    <div class="header-content">
+      <div class="title-section">
+        <h1>Todo App</h1>
+        <div class="stats">
+          <span>{{ completedCount }} of {{ totalCount }} completed</span>
+        </div>
+      </div>
+      <app-theme-toggle></app-theme-toggle>
+    </div>
+  </header>
+
+  <div class="add-todo-form">
+    <input 
+      type="text" 
+      [(ngModel)]="newTodoTitle"
+      (keyup.enter)="addTodo()"
+      placeholder="Add a new todo..."
+      class="todo-input"
+    >
+    <button 
+      (click)="addTodo()" 
+      [disabled]="!newTodoTitle.trim()"
+      class="add-btn"
+    >
+      Add Todo
+    </button>
+  </div>
+
+  <div class="todos-container">
+    <div *ngIf="todos.length === 0" class="empty-state">
+      <p>No todos yet. Add one above!</p>
+    </div>
+    
+    <div 
+      *ngFor="let todo of todos; let i = index; trackBy: trackByFn"
+      class="todo-drop-zone"
+      [ngStyle]="getDragPlaceholderStyle(i)"
+      (dragover)="onDragOver($event, i)"
+      (drop)="onDrop($event, i)"
+    >
+      <app-todo-item 
+        [todo]="todo"
+        [class.being-dragged]="draggedItemId === todo.id"
+        (toggle)="onToggleTodo($event)"
+        (delete)="onDeleteTodo($event)"
+        (edit)="onEditTodo($event)"
+        (dragStart)="onDragStart($event)"
+        (dragEnd)="onDragEnd()"
+        class="todo-item-wrapper"
+        draggable="true"
+        (dragstart)="onDragStart(todo.id)"
+        (dragend)="onDragEnd()"
+      ></app-todo-item>
+    </div>
+  </div>
+</div>

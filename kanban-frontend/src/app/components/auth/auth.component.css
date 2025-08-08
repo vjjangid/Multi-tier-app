@@ -1,0 +1,56 @@
+.auth-wrapper {
+  min-height: 100vh;
+  background: var(--bg-gradient);
+}
+
+.loading-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-gradient);
+}
+
+.loading-content {
+  text-align: center;
+  color: var(--text-primary);
+}
+
+.loading-spinner {
+  margin: 0 auto 1rem;
+  width: 40px;
+  height: 40px;
+  color: white;
+}
+
+.loading-spinner svg {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-content h2 {
+  font-size: 1.5rem;
+  font-weight: 300;
+  margin: 0;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.auth-container {
+  position: relative;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 480px) {
+  .loading-content h2 {
+    font-size: 1.25rem;
+  }
+}

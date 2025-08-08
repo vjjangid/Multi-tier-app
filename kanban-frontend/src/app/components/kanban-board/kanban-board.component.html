@@ -1,0 +1,51 @@
+<div class="kanban-app">
+  <div class="stats-section">
+    <div class="stats">
+      <div class="stat-item">
+        <span class="stat-number">{{ totalTodos }}</span>
+        <span class="stat-label">Total Tasks</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">{{ inProgressTodos }}</span>
+        <span class="stat-label">In Progress</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">{{ completedTodos }}</span>
+        <span class="stat-label">Completed</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="add-todo-section">
+    <div class="add-todo-form">
+      <input 
+        type="text" 
+        [(ngModel)]="newTodoTitle"
+        (keyup.enter)="addTodo()"
+        placeholder="Add a new task..."
+        class="todo-input"
+      >
+      <button 
+        (click)="addTodo()" 
+        [disabled]="!newTodoTitle.trim()"
+        class="add-btn"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+        </svg>
+        Add Task
+      </button>
+    </div>
+  </div>
+
+  <div class="kanban-board">
+    <app-kanban-column
+      *ngFor="let column of columns; trackBy: trackByColumn"
+      [column]="column"
+      (editTodo)="onEditTodo($event)"
+      (deleteTodo)="onDeleteTodo($event)"
+      (statusChange)="onStatusChange($event.todoId, $event.newStatus)"
+      (reorderInColumn)="onReorderWithinColumn(column.id, $event.fromIndex, $event.toIndex)"
+    ></app-kanban-column>
+  </div>
+</div>

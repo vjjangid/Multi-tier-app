@@ -1,0 +1,22 @@
+<div class="auth-wrapper">
+  <div *ngIf="authState.isLoading" class="loading-screen">
+    <div class="loading-content">
+      <div class="loading-spinner">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12,4V2A10,10 0 0,0 2,12H4A8,8 0 0,1 12,4Z"/>
+        </svg>
+      </div>
+      <h2>Loading Kanban Board...</h2>
+    </div>
+  </div>
+
+  <div *ngIf="!authState.isLoading && !authState.isAuthenticated" class="auth-container">
+    <div *ngIf="!showSignup">
+      <app-login (switchToSignup)="toggleAuthMode()"></app-login>
+    </div>
+    
+    <div *ngIf="showSignup">
+      <app-signup (switchToLogin)="toggleAuthMode()"></app-signup>
+    </div>
+  </div>
+</div>
